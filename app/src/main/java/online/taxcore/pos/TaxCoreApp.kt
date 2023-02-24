@@ -3,6 +3,10 @@ package online.taxcore.pos
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
+import com.pax.dal.IDAL
+import com.pax.neptunelite.api.NeptuneLiteUser
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -24,6 +28,31 @@ class TaxCoreApp : Application(), HasActivityInjector {
 
     companion object {
         lateinit var application: Context
+
+        private var _dal: IDAL? = null
+
+        val dal
+            get(): IDAL {
+                if (_dal == null) {
+                    try {
+                        val start = System.currentTimeMillis()
+                        _dal =
+                            NeptuneLiteUser.getInstance().getDal(application)
+                        Log.i(
+                            "Test",
+                            "get dal cost:" + (System.currentTimeMillis() - start) + " ms"
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Toast.makeText(
+                            application,
+                            "error occurred,DAL is null.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+                return _dal!!
+            }
     }
 
     override fun onCreate() {
@@ -33,6 +62,7 @@ class TaxCoreApp : Application(), HasActivityInjector {
         initRealm()
 
         application = applicationContext
+        _dal = dal
     }
 
     private fun initRealm() {

@@ -13,6 +13,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -31,6 +32,7 @@ import online.taxcore.pos.constants.PrefConstants
 import online.taxcore.pos.constants.StorageConstants
 import online.taxcore.pos.ui.base.BaseActivity
 import online.taxcore.pos.utils.CreatePdf
+import online.taxcore.pos.utils.PaxPrinter
 import java.io.File
 
 class FiscalInvoiceFragment : DialogFragment() {
@@ -137,15 +139,17 @@ class FiscalInvoiceFragment : DialogFragment() {
     ) {
         val imageBytes = arguments?.getString("QrCode")
         val imageByteArray = Base64.decode(imageBytes, Base64.DEFAULT)
-        val content =
-            CreatePdf.write(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
-        if (content) {
-            val act = activity as BaseActivity
-            val printManager = act.originalActivityContext()
-                .getSystemService(Context.PRINT_SERVICE) as PrintManager
-            val jobName = this.getString(R.string.app_name) + " doc"
-            printManager.print(jobName, MyPrintDocumentAdapter(invoiceNumber, ""), null)
-        }
+
+        PaxPrinter.printReceipt(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
+
+//        val content =
+//            CreatePdf.write(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
+//        if (content) {
+//            val act = activity as BaseActivity
+//            val printManager = act.originalActivityContext()
+//                .getSystemService(Context.PRINT_SERVICE) as PrintManager
+//            val jobName = this.getString(R.string.app_name) + " doc"
+//            printManager.print(jobName, MyPrintDocumentAdapter(invoiceNumber, ""), null)
     }
 
     private fun showQrCode() {
