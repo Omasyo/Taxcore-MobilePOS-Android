@@ -62,6 +62,8 @@ ext {
 }
 
 dependencies {
+    implementation files('libs/lcprintsdk1.1-release.aar')
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
 
