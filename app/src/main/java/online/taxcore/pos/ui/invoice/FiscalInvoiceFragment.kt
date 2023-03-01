@@ -2,18 +2,15 @@ package online.taxcore.pos.ui.invoice
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.print.PrintManager
 import android.util.Base64
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -30,9 +27,8 @@ import online.taxcore.pos.BuildConfig
 import online.taxcore.pos.R
 import online.taxcore.pos.constants.PrefConstants
 import online.taxcore.pos.constants.StorageConstants
-import online.taxcore.pos.ui.base.BaseActivity
 import online.taxcore.pos.utils.CreatePdf
-import online.taxcore.pos.utils.PaxPrinter
+import online.taxcore.pos.printers.PaxPrinter
 import java.io.File
 
 class FiscalInvoiceFragment : DialogFragment() {
@@ -140,7 +136,7 @@ class FiscalInvoiceFragment : DialogFragment() {
         val imageBytes = arguments?.getString("QrCode")
         val imageByteArray = Base64.decode(imageBytes, Base64.DEFAULT)
 
-        PaxPrinter.printReceipt(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
+        PaxPrinter.print(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
 
 //        val content =
 //            CreatePdf.write(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
