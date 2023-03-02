@@ -137,15 +137,6 @@ class FiscalInvoiceFragment : DialogFragment() {
         val imageByteArray = Base64.decode(imageBytes, Base64.DEFAULT)
 
         PaxPrinter.print(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
-
-//        val content =
-//            CreatePdf.write(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
-//        if (content) {
-//            val act = activity as BaseActivity
-//            val printManager = act.originalActivityContext()
-//                .getSystemService(Context.PRINT_SERVICE) as PrintManager
-//            val jobName = this.getString(R.string.app_name) + " doc"
-//            printManager.print(jobName, MyPrintDocumentAdapter(invoiceNumber, ""), null)
     }
 
     private fun showQrCode() {

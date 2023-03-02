@@ -1,6 +1,6 @@
 package online.taxcore.pos.printers
 
-interface ThermalPrinter {
+interface Printer {
     fun print(
         invoiceNumber: String,
         invoiceText: String = "",

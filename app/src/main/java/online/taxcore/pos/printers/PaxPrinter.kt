@@ -7,7 +7,7 @@ import com.pax.dal.entity.EFontTypeAscii
 import com.pax.dal.entity.EFontTypeExtCode
 import online.taxcore.pos.TaxCoreApp
 
-object PaxPrinter: ThermalPrinter {
+object PaxPrinter: Printer {
    override fun print(
        invoiceNumber: String,
        invoiceText: String,
