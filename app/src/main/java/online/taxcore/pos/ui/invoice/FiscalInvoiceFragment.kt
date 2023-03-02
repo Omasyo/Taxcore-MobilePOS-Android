@@ -29,6 +29,7 @@ import online.taxcore.pos.constants.PrefConstants
 import online.taxcore.pos.constants.StorageConstants
 import online.taxcore.pos.utils.CreatePdf
 import online.taxcore.pos.printers.PaxPrinter
+import online.taxcore.pos.printers.Printer
 import java.io.File
 
 class FiscalInvoiceFragment : DialogFragment() {
@@ -136,7 +137,7 @@ class FiscalInvoiceFragment : DialogFragment() {
         val imageBytes = arguments?.getString("QrCode")
         val imageByteArray = Base64.decode(imageBytes, Base64.DEFAULT)
 
-        PaxPrinter.print(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
+        getPrinter().print(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
     }
 
     private fun showQrCode() {
@@ -188,4 +189,9 @@ class FiscalInvoiceFragment : DialogFragment() {
         } else {
             "${getString(R.string.invoice)} $pdfTitle from $seller"
         }
+
+
+    private fun getPrinter() : Printer {
+        return PaxPrinter
+    }
 }
