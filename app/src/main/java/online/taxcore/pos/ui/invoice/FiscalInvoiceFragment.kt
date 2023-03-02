@@ -2,12 +2,10 @@ package online.taxcore.pos.ui.invoice
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.print.PrintManager
 import android.util.Base64
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -29,9 +27,8 @@ import online.taxcore.pos.BuildConfig
 import online.taxcore.pos.R
 import online.taxcore.pos.constants.PrefConstants
 import online.taxcore.pos.constants.StorageConstants
-import online.taxcore.pos.ui.base.BaseActivity
 import online.taxcore.pos.utils.CreatePdf
-import online.taxcore.pos.utils.ThermalPrinter
+import online.taxcore.pos.printers.YC80Printer
 import java.io.File
 
 class FiscalInvoiceFragment : DialogFragment() {
@@ -138,22 +135,12 @@ class FiscalInvoiceFragment : DialogFragment() {
     ) {
         val imageBytes = arguments?.getString("QrCode")
         val imageByteArray = Base64.decode(imageBytes, Base64.DEFAULT)
-        ThermalPrinter.printReceipt(
-            requireContext(),
+        YC80Printer.print(
             invoiceNumber,
             invoiceText,
             imageByteArray,
             invoiceFooter
         )
-//        val content =
-//            CreatePdf.write(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
-//        if (content) {
-//            val act = activity as BaseActivity
-//            val printManager = act.originalActivityContext()
-//                .getSystemService(Context.PRINT_SERVICE) as PrintManager
-//            val jobName = this.getString(R.string.app_name) + " doc"
-//            printManager.print(jobName, MyPrintDocumentAdapter(invoiceNumber, ""), null)
-//        }
     }
 
     private fun showQrCode() {

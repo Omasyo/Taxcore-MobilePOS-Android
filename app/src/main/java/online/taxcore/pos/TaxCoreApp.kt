@@ -3,6 +3,7 @@ package online.taxcore.pos
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import com.example.lc_print_sdk.PrintUtil
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -33,6 +34,8 @@ class TaxCoreApp : Application(), HasActivityInjector {
         initRealm()
 
         application = applicationContext
+
+        PrintUtil.getInstance(applicationContext)
     }
 
     private fun initRealm() {
