@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Base64
@@ -27,6 +28,7 @@ import online.taxcore.pos.BuildConfig
 import online.taxcore.pos.R
 import online.taxcore.pos.constants.PrefConstants
 import online.taxcore.pos.constants.StorageConstants
+import online.taxcore.pos.printers.Printer
 import online.taxcore.pos.utils.CreatePdf
 import online.taxcore.pos.printers.YC80Printer
 import java.io.File
@@ -135,7 +137,7 @@ class FiscalInvoiceFragment : DialogFragment() {
     ) {
         val imageBytes = arguments?.getString("QrCode")
         val imageByteArray = Base64.decode(imageBytes, Base64.DEFAULT)
-        YC80Printer.print(
+        getPrinter().print(
             invoiceNumber,
             invoiceText,
             imageByteArray,
@@ -192,4 +194,8 @@ class FiscalInvoiceFragment : DialogFragment() {
         } else {
             "${getString(R.string.invoice)} $pdfTitle from $seller"
         }
+
+    private fun getPrinter() : Printer {
+        return YC80Printer
+    }
 }
