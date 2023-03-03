@@ -3,15 +3,41 @@ package online.taxcore.pos.printers
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.example.lc_print_sdk.PrintConfig
+import com.example.lc_print_sdk.PrintConfig.IErrorCode
 import com.example.lc_print_sdk.PrintUtil
 
 object YC80Printer : Printer {
+
+    private var state = PrinterState.SUCCESS
+
+    init {
+        PrintUtil.setPrintEventListener(listener)
+    }
+
+    object listener : PrintUtil.PrinterBinderListener {
+        override fun onPrintCallback(errorCode: Int) {
+            println("OmasCode is $errorCode")
+            state = when (errorCode) {
+                IErrorCode.ERROR_NO_ERROR -> PrinterState.SUCCESS
+                IErrorCode.ERROR_DEV_IS_BUSY -> PrinterState.BUSY
+                IErrorCode.ERROR_PRINT_NOPAPER -> PrinterState.OUTOFPAPER
+                else -> PrinterState.ERROR
+            }
+            print("State is $state Errorcode is $errorCode")
+        }
+
+        override fun onVersion(p0: String?) {}
+
+    }
+
     override fun print(
         invoiceNumber: String,
         invoiceText: String,
         imageByteArray: ByteArray,
         invoiceFooter: String,
-    ) {
+    ): PrinterState {
+
+        PrintUtil.resetPrint()
 
         //Process header
         val lines = invoiceText.lines()
@@ -28,7 +54,7 @@ object YC80Printer : Printer {
         for (i in 1..lines.lastIndex) {
             val (text, fontSize) = when (lines[i].first()) {
                 '=' -> Pair(
-                    lines[i].subSequence(1, lines.lastIndex-1),
+                    lines[i].subSequence(1, lines.lastIndex - 1),
                     PrintConfig.FontSize.TOP_FONT_SIZE_MIDDLE
                 )
                 '-' -> Pair(lines[i], PrintConfig.FontSize.TOP_FONT_SIZE_MIDDLE)
@@ -69,7 +95,10 @@ object YC80Printer : Printer {
         )
         PrintUtil.printLine(6)
         PrintUtil.start()
+
+        return state
     }
+
 
     private fun formatInvoiceText(text: String): String {
         val stringBuilder = StringBuilder()

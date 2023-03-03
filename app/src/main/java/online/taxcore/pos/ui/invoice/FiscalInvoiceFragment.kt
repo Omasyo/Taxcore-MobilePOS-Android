@@ -12,6 +12,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -29,6 +30,7 @@ import online.taxcore.pos.R
 import online.taxcore.pos.constants.PrefConstants
 import online.taxcore.pos.constants.StorageConstants
 import online.taxcore.pos.printers.Printer
+import online.taxcore.pos.printers.PrinterState
 import online.taxcore.pos.utils.CreatePdf
 import online.taxcore.pos.printers.YC80Printer
 import java.io.File
@@ -137,12 +139,25 @@ class FiscalInvoiceFragment : DialogFragment() {
     ) {
         val imageBytes = arguments?.getString("QrCode")
         val imageByteArray = Base64.decode(imageBytes, Base64.DEFAULT)
-        getPrinter().print(
+        
+        val status = getPrinter().print(
             invoiceNumber,
             invoiceText,
             imageByteArray,
             invoiceFooter
         )
+
+        fun makeToast(message: String) = Toast.makeText(
+            requireContext(),
+            message,
+            Toast.LENGTH_LONG
+        ).show()
+        when (status) {
+            PrinterState.OUTOFPAPER -> makeToast("Please insert receipt paper")
+            PrinterState.ERROR -> makeToast("An error occured while printing")
+            PrinterState.BUSY -> makeToast("Printer Busy")
+            PrinterState.SUCCESS -> {}
+        }
     }
 
     private fun showQrCode() {
@@ -195,7 +210,7 @@ class FiscalInvoiceFragment : DialogFragment() {
             "${getString(R.string.invoice)} $pdfTitle from $seller"
         }
 
-    private fun getPrinter() : Printer {
+    private fun getPrinter(): Printer {
         return YC80Printer
     }
 }
