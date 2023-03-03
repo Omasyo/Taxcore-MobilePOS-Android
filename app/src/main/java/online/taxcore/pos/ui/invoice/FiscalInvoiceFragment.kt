@@ -2,11 +2,13 @@ package online.taxcore.pos.ui.invoice
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.print.PrintManager
 import android.util.Base64
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -33,6 +35,7 @@ import online.taxcore.pos.printers.Printer
 import online.taxcore.pos.printers.PrinterState
 import online.taxcore.pos.utils.CreatePdf
 import online.taxcore.pos.printers.YC80Printer
+import online.taxcore.pos.ui.base.BaseActivity
 import java.io.File
 
 class FiscalInvoiceFragment : DialogFragment() {
@@ -139,24 +142,37 @@ class FiscalInvoiceFragment : DialogFragment() {
     ) {
         val imageBytes = arguments?.getString("QrCode")
         val imageByteArray = Base64.decode(imageBytes, Base64.DEFAULT)
-        
-        val status = getPrinter().print(
-            invoiceNumber,
-            invoiceText,
-            imageByteArray,
-            invoiceFooter
-        )
 
-        fun makeToast(message: String) = Toast.makeText(
-            requireContext(),
-            message,
-            Toast.LENGTH_LONG
-        ).show()
-        when (status) {
-            PrinterState.OUTOFPAPER -> makeToast("Please insert receipt paper")
-            PrinterState.ERROR -> makeToast("An error occured while printing")
-            PrinterState.BUSY -> makeToast("Printer Busy")
-            PrinterState.SUCCESS -> {}
+        getPrinter()?.let {
+            val status = it.print(
+                invoiceNumber,
+                invoiceText,
+                imageByteArray,
+                invoiceFooter
+            )
+
+            fun makeToast(message: String) = Toast.makeText(
+                requireContext(),
+                message,
+                Toast.LENGTH_LONG
+            ).show()
+            when (status) {
+                PrinterState.OUTOFPAPER -> makeToast("Please insert receipt paper")
+                PrinterState.ERROR -> makeToast("An error occured while printing")
+                PrinterState.BUSY -> makeToast("Printer Busy")
+                PrinterState.SUCCESS -> {}
+            }
+            return
+        }
+
+        val content =
+            CreatePdf.write(invoiceNumber, invoiceText, imageByteArray, invoiceFooter)
+        if (content) {
+            val act = activity as BaseActivity
+            val printManager = act.originalActivityContext()
+                .getSystemService(Context.PRINT_SERVICE) as PrintManager
+            val jobName = this.getString(R.string.app_name) + " doc"
+            printManager.print(jobName, MyPrintDocumentAdapter(invoiceNumber, ""), null)
         }
     }
 
@@ -210,7 +226,8 @@ class FiscalInvoiceFragment : DialogFragment() {
             "${getString(R.string.invoice)} $pdfTitle from $seller"
         }
 
-    private fun getPrinter(): Printer {
-        return YC80Printer
+    private fun getPrinter() : Printer? = when(Build.BRAND.lowercase()) {
+        "alps" -> YC80Printer
+        else -> null
     }
 }
