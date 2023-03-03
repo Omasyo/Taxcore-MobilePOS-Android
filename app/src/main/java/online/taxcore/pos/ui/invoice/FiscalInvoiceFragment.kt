@@ -226,7 +226,7 @@ class FiscalInvoiceFragment : DialogFragment() {
             "${getString(R.string.invoice)} $pdfTitle from $seller"
         }
 
-    private fun getPrinter() : Printer? = when(Build.BRAND.lowercase()) {
+    private fun getPrinter(): Printer? = when (Build.BRAND.lowercase()) {
         "alps" -> YC80Printer
         else -> null
     }
