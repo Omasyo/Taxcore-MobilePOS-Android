@@ -1,7 +1,6 @@
 package online.taxcore.pos.printers
 
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.pax.dal.exceptions.PrinterDevException
 import com.pax.dal.entity.EFontTypeAscii
 import com.pax.dal.entity.EFontTypeExtCode
@@ -13,15 +12,13 @@ object PaxPrinter : Printer {
         invoiceText: String,
         imageByteArray: ByteArray,
         invoiceFooter: String,
-    ): Int {
+    ): PrinterState {
         try {
             val printer = TaxCoreApp.dal.printer
 
             printer.fontSet(EFontTypeAscii.FONT_8_16, EFontTypeExtCode.FONT_16_16)
 
             printer.printStr(formatInvoiceText(invoiceText), null)
-
-            Log.d("INVoice Text", "printReceipt: $invoiceText")
 
             val bitmap = BitmapFactory.decodeByteArray(
                 imageByteArray,
@@ -32,11 +29,16 @@ object PaxPrinter : Printer {
             printer.printBitmap(bitmap)
             printer.printStr(formatInvoiceText(invoiceFooter), null)
             printer.printStr("\n\n\n\n\n\n\n\n", null)
-            return printer.start()
+            return when(printer.start()) {
+                0 -> PrinterState.SUCCESS
+                1, 16 -> PrinterState.BUSY
+                2 -> PrinterState.OUTOFPAPER
+                else -> PrinterState.ERROR
+            }
         } catch (e: PrinterDevException) {
             e.printStackTrace()
         }
-        return ERROR
+        return PrinterState.ERROR
     }
 
     private fun formatInvoiceText(text: String): String {

@@ -9,5 +9,5 @@ interface Printer {
         invoiceText: String = "",
         imageByteArray: ByteArray,
         invoiceFooter: String = "",
-    ): Int
+    ): PrinterState
 }
