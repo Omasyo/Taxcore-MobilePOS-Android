@@ -144,7 +144,7 @@ class FiscalInvoiceFragment : DialogFragment() {
         val imageByteArray = Base64.decode(imageBytes, Base64.DEFAULT)
 
         getPrinter()?.let {
-           val status = it.print(
+            val status = it.print(
                 invoiceNumber,
                 invoiceText,
                 imageByteArray,
@@ -226,8 +226,7 @@ class FiscalInvoiceFragment : DialogFragment() {
             "${getString(R.string.invoice)} $pdfTitle from $seller"
         }
 
-
-    private fun getPrinter() : Printer? = when(Build.BRAND.lowercase()) {
+    private fun getPrinter(): Printer? = when (Build.BRAND.lowercase()) {
         "pax" -> PaxPrinter
         else -> null
     }
