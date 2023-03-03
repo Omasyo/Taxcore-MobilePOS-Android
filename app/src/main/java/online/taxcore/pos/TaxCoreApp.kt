@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.pax.dal.IDAL
 import com.pax.neptunelite.api.NeptuneLiteUser
+import com.example.lc_print_sdk.PrintUtil
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -63,6 +64,8 @@ class TaxCoreApp : Application(), HasActivityInjector {
 
         application = applicationContext
         _dal = dal
+
+        PrintUtil.getInstance(applicationContext)
     }
 
     private fun initRealm() {

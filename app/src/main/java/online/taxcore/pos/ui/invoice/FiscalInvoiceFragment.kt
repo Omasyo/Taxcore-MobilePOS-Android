@@ -35,6 +35,10 @@ import online.taxcore.pos.utils.CreatePdf
 import online.taxcore.pos.printers.PaxPrinter
 import online.taxcore.pos.printers.Printer
 import online.taxcore.pos.printers.PrinterState
+import online.taxcore.pos.printers.Printer
+import online.taxcore.pos.printers.PrinterState
+import online.taxcore.pos.utils.CreatePdf
+import online.taxcore.pos.printers.YC80Printer
 import online.taxcore.pos.ui.base.BaseActivity
 import java.io.File
 
@@ -228,6 +232,7 @@ class FiscalInvoiceFragment : DialogFragment() {
 
     private fun getPrinter(): Printer? = when (Build.BRAND.lowercase()) {
         "pax" -> PaxPrinter
+        "alps" -> YC80Printer
         else -> null
     }
 }
