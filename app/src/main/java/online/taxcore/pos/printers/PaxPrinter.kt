@@ -7,13 +7,13 @@ import com.pax.dal.entity.EFontTypeAscii
 import com.pax.dal.entity.EFontTypeExtCode
 import online.taxcore.pos.TaxCoreApp
 
-object PaxPrinter: Printer {
-   override fun print(
-       invoiceNumber: String,
-       invoiceText: String,
-       imageByteArray: ByteArray,
-       invoiceFooter: String,
-    ) {
+object PaxPrinter : Printer {
+    override fun print(
+        invoiceNumber: String,
+        invoiceText: String,
+        imageByteArray: ByteArray,
+        invoiceFooter: String,
+    ): Int {
         try {
             val printer = TaxCoreApp.dal.printer
 
@@ -32,17 +32,18 @@ object PaxPrinter: Printer {
             printer.printBitmap(bitmap)
             printer.printStr(formatInvoiceText(invoiceFooter), null)
             printer.printStr("\n\n\n\n\n\n\n\n", null)
-            printer.start()
+            return printer.start()
         } catch (e: PrinterDevException) {
             e.printStackTrace()
         }
+        return ERROR
     }
 
     private fun formatInvoiceText(text: String): String {
         val stringBuilder = StringBuilder()
         val lines = text.lines()
         for (line in lines) {
-            val padding = (47 - line.length)/2
+            val padding = (47 - line.length) / 2
             val paddedLine = line.padStart(line.length + padding)
 
             stringBuilder.append("$paddedLine\n")
