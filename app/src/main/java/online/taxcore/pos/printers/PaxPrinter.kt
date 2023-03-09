@@ -16,6 +16,8 @@ object PaxPrinter : Printer {
         try {
             val printer = TaxCoreApp.dal.printer
 
+            printer.init()
+
             printer.fontSet(EFontTypeAscii.FONT_8_16, EFontTypeExtCode.FONT_16_16)
 
             printer.printStr(formatInvoiceText(invoiceText), null)

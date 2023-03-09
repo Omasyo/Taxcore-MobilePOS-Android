@@ -2,6 +2,7 @@ package online.taxcore.pos.printers
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import com.example.lc_print_sdk.PrintConfig
 import com.example.lc_print_sdk.PrintConfig.IErrorCode
 import com.example.lc_print_sdk.PrintUtil
@@ -76,7 +77,7 @@ object YC80Printer : Printer {
         )
 
         val scaledBitmap =
-            Bitmap.createScaledBitmap(bitmap, 360, 360, true)
+            Bitmap.createScaledBitmap(bitmap, 380, 380, true)
         PrintUtil.printBitmap(scaledBitmap)
         PrintUtil.printLine(1)
 
