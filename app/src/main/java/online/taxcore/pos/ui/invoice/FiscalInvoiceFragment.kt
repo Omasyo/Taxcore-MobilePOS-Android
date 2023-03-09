@@ -35,9 +35,6 @@ import online.taxcore.pos.utils.CreatePdf
 import online.taxcore.pos.printers.PaxPrinter
 import online.taxcore.pos.printers.Printer
 import online.taxcore.pos.printers.PrinterState
-import online.taxcore.pos.printers.Printer
-import online.taxcore.pos.printers.PrinterState
-import online.taxcore.pos.utils.CreatePdf
 import online.taxcore.pos.printers.YC80Printer
 import online.taxcore.pos.ui.base.BaseActivity
 import java.io.File
