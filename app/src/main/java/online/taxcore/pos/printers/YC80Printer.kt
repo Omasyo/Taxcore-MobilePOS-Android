@@ -16,14 +16,12 @@ object YC80Printer : Printer {
 
     object listener : PrintUtil.PrinterBinderListener {
         override fun onPrintCallback(errorCode: Int) {
-            println("OmasCode is $errorCode")
             state = when (errorCode) {
                 IErrorCode.ERROR_NO_ERROR -> PrinterState.SUCCESS
                 IErrorCode.ERROR_DEV_IS_BUSY -> PrinterState.BUSY
                 IErrorCode.ERROR_PRINT_NOPAPER -> PrinterState.OUTOFPAPER
                 else -> PrinterState.ERROR
             }
-            print("State is $state Errorcode is $errorCode")
         }
 
         override fun onVersion(p0: String?) {}
@@ -77,12 +75,9 @@ object YC80Printer : Printer {
             BitmapFactory.Options(),
         )
 
-        val scay: Int = bitmap.width / 300
         val scaledBitmap =
-            Bitmap.createScaledBitmap(bitmap, bitmap.width / scay, bitmap.height / scay, true)
-        PrintUtil.printBitmap(scaledBitmap.apply {
-            println("$width * $height")
-        })
+            Bitmap.createScaledBitmap(bitmap, 360, 360, true)
+        PrintUtil.printBitmap(scaledBitmap)
         PrintUtil.printLine(1)
 
         //process footer
